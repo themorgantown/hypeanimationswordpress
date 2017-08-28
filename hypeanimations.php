@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Hype Animations
-Description: Insert your Hype animations
+Description: Upload and embed your your Hype animations 
 Author: <a href="http://www.eralion.com" target="_blank">ERALION.com</a>
 Text Domain: hype-animations
 Domain Path: /languages
-Version: 1.5
+Version: 2.0
 */
 #---------------------------------------------------------------------------#
 add_action( 'plugins_loaded', 'hypeanimations_init_lang' );

@@ -56,7 +56,7 @@ msgid "Manage animations"
 msgstr ""
 
 #: includes/adminpanel.php:332
-msgid "Last file update"
+msgid "File updated on"
 msgstr ""
 
 #: includes/adminpanel.php:340
@@ -88,7 +88,7 @@ msgid "Updated !"
 msgstr ""
 
 #: includes/adminpanel.php:385
-msgid "Error, please try again !"
+msgid "Error, please try again!"
 msgstr ""
 
 #: includes/adminpanel.php:392
@@ -96,7 +96,7 @@ msgid "Update file"
 msgstr ""
 
 #: includes/adminpanel.php:404
-msgid "Processing ..."
+msgid "Processing..."
 msgstr ""
 
 #: includes/adminpanel.php:405

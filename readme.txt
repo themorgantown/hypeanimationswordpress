@@ -4,7 +4,7 @@ Plugin URI: http://www.ERALION.com
 Donate link: http://www.ERALION.com
 Contributors: freeben
 Tags: Hype,Animations
-Requires at least: 4.1
+Requires at least: 4.1 
 Tested up to: 4.5.1
 Stable tag: trunk
 License: GPLv2 or later
@@ -45,6 +45,9 @@ Hype software is edited by <a href="http://tumult.com" target="_blank">Tumult &c
 2. Editor toolbox button
 
 == Changelog ==
+
+= 2.0 = 
+Updates from Tumult. 
 
 = 1.5 =
 * Changing modal popup.
