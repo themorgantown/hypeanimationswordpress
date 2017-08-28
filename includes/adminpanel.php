@@ -19,6 +19,8 @@ function hypeanimations_panel_upload() {
 			if (file_exists($uploaddir.'/config.xml')) {
 				unlink($uploaddir.'/config.xml');
 			}
+			$new_name = str_replace('.oam', '', basename($_FILES['file']['name']));
+			rename($uploaddir.'Assets/'.$new_name.'.hyperesources', $uploaddir.'Assets/index.hyperesources');
 			$files = scandir($uploaddir.'Assets/');
 			for ($i=0;isset($files[$i]);$i++) {
 				if (preg_match('~.html~',$files[$i])) {
@@ -30,7 +32,7 @@ function hypeanimations_panel_upload() {
 					else { 
 						$maxid=1;
 					}
-					$insert = $wpdb -> query("INSERT ".$table_name." SET id='',nom='".$actfile[0]."',slug='".str_replace(' ','',strtolower($actfile[0]))."',code='',updated='".time()."',container='none'");
+					$insert = $wpdb -> query("INSERT ".$table_name." SET id='',nom='".$new_name."',slug='".str_replace(' ','',strtolower($new_name))."',code='',updated='".time()."',container='div'");
 					$lastid = $wpdb->insert_id;
 					$jsfiles = scandir($uploaddir.'Assets/'.$actfile[0].'.hyperesources/');
 					for ($j=0;isset($jsfiles[$j]);$j++) {
@@ -56,7 +58,7 @@ function hypeanimations_panel_upload() {
 					$handle = fopen($uploaddir.'Assets/'.$actfile[0].'.html', "r");
 					if ($handle) {
 						while (($line = fgets($handle)) !== false) {
-							$line=str_replace($actfile[0].'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$lastid,$line);
+							$line=str_replace($new_name.'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$lastid,$line);
 							if (preg_match('~<div id="~',$line)) {
 								$recordlines=1;
 							}
@@ -237,6 +239,8 @@ function hypeanimations_panel() {
 			if (file_exists($uploaddir.'/config.xml')) {
 				unlink($uploaddir.'/config.xml');
 			}
+			$new_name = str_replace('.oam', '', basename($_FILES['file']['name']));
+			rename($uploaddir.'Assets/'.$new_name.'.hyperesources', $uploaddir.'Assets/index.hyperesources');
 			$files = scandir($uploaddir.'Assets/');
 			for ($i=0;isset($files[$i]);$i++) {
 				if (preg_match('~.html~',$files[$i])) {
@@ -275,7 +279,7 @@ function hypeanimations_panel() {
 					$handle = fopen($uploaddir.'Assets/'.$actfile[0].'.html', "r");
 					if ($handle) {
 						while (($line = fgets($handle)) !== false) {
-							$line=str_replace($actfile[0].'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$actdataid,$line);
+							$line=str_replace($new_name.'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$actdataid,$line);
 							if (preg_match('~<div id="~',$line)) {
 								$recordlines=1;
 							}
@@ -327,7 +331,6 @@ function hypeanimations_panel() {
 		$result = $wpdb->get_results($sql);
 		foreach( $result as $results ) {
 			echo '<tr><td>'.$results->nom.'</td><td><pre>[hypeanimations_anim id="'.$results->id.'"]</pre></td><td>'.__( 'Add a container around the animation' , 'hype-animations' ).' : <select class="hypeanimations_container" name="container">
-<option value="none" '.($results->container=='none' ? 'selected' : '').'>'.__( 'No' , 'hype-animations' ).'</option>
 <option value="div" '.($results->container=='div' ? 'selected' : '').'>&lt;div&gt;</option>
 <option value="iframe" '.($results->container=='iframe' ? 'selected' : '').'>&lt;iframe&gt;</option>
 </select> <input type="button" value="'.__( 'Update' , 'hype-animations' ).'" class="updatecontainer" data-id="'.$results->id.'"><div '.($results->container=='none' ? 'style="display:none;"' : '').'>'.__( 'Container CSS class' , 'hype-animations' ).' : <input type="text" name="class" placeholder="Myclass1 Myclass2" value="'.$results->containerclass.'"></div></td><td>'.($results->updated==0 ? '<em>'.__( 'No data' , 'hype-animations' ).'</em>' : date('d/m/Y',$results->updated).'<br>'.date('H:i:s',$results->updated)).'</td><td><a href="admin.php?page=hypeanimations_panel&update='.$results->id.'" class="animupdate" data-id="'.$results->id.'">'.__( 'Update' , 'hype-animations' ).'</a> <a href="admin.php?page=hypeanimations_panel&delete='.$results->id.'" class="animdelete">'.__( 'Delete' , 'hype-animations' ).'</a></td></tr>';
