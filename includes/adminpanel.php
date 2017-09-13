@@ -34,19 +34,15 @@ function hypeanimations_panel_upload() {
 					}
 					$insert = $wpdb -> query("INSERT ".$table_name." SET id='',nom='".$new_name."',slug='".str_replace(' ','',strtolower($new_name))."',code='',updated='".time()."',container='div'");
 					$lastid = $wpdb->insert_id;
+
+					@mkdir($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$new_name.'.hyperesources/', 0755, true);
+					
 					$jsfiles = scandir($uploaddir.'Assets/'.$actfile[0].'.hyperesources/');
 					for ($j=0;isset($jsfiles[$j]);$j++) {
-						if (preg_match('~_hype_generated_script.js~',$jsfiles[$j])) {
-							$jshandle = fopen($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j], "r");
-							if ($jshandle) {
-								$newfile='';
-								while (($jsline = fgets($jshandle)) !== false) {
-									$jsline=str_replace($actfile[0].'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$lastid,$jsline);
-									$newfile.=$jsline;
-								}
-								//reecrire
+						if($jsfiles[$j] != '.' && $jsfiles[$j] != '..'){
+							if(!is_dir($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j])){
+								copy($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j], $uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$new_name.'.hyperesources/'.$jsfiles[$j]);
 								unlink($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j]);
-								file_put_contents($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j], $newfile);
 							}
 						}
 					}
@@ -58,7 +54,7 @@ function hypeanimations_panel_upload() {
 					$handle = fopen($uploaddir.'Assets/'.$actfile[0].'.html', "r");
 					if ($handle) {
 						while (($line = fgets($handle)) !== false) {
-							$line=str_replace($new_name.'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$lastid,$line);
+							$line=str_replace($new_name.'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$lastid.'/'.$new_name.'.hyperesources',$line);
 							if (preg_match('~<div id="~',$line)) {
 								$recordlines=1;
 							}
@@ -76,6 +72,10 @@ function hypeanimations_panel_upload() {
 						//echo 'error';
 					}
 					$update = $wpdb -> query("UPDATE ".$table_name." SET code='".addslashes(htmlentities($agarder1))."' WHERE id='".$lastid."' LIMIT 1");
+
+					// //copy index.html
+					copy($uploaddir.'Assets/'.$actfile[0].'.html', $upload_dir['basedir'].'/hypeanimations/'.$lastid.'/'.$actfile[0].'.html');
+
 					if (file_exists($uploaddir.'Assets/'.$actfile[0].'.html')) {
 						unlink($uploaddir.'Assets/'.$actfile[0].'.html');
 					}
@@ -129,10 +129,11 @@ function hypeanimations_panel() {
 	$anims_dir=$upload_dir['basedir'].'/hypeanimations/';
 	echo '<br><h1>Hype Animations (version '.$version.')</h1>
 	<p>&nbsp;</p>
+	</div>
 	<div class="eraabout"><h2>'.__( 'About' , 'hype-animations' ).' <a href="http://www.eralion.com" target="_blank" class="eralink">ERALION.com</a></h2><div class="hypeanimbloc">'.__( 'If you have any problem with this plugin, you can' , 'hype-animations' ).' <a href="http://www.eralion.com/contactez-nous/" target="_blank">'.__( 'contact us' , 'hype-animations' ).'</a>.<br>'.__( 'We can also create customs plugins and others web services.' , 'hype-animations' ).'</div></div>
 	<h2>'.__( 'Add new animation' , 'hype-animations' ).'</h2>
 	<div class="hypeanimbloc">
-	'.__( 'Upload a .OAM file exported by Tumult Hype and it will generate a shortcode that you will can insert everywhere you want on your website.' , 'hype-animations' ).'<br><br>
+	'.__( 'Upload a .OAM file exported by Tumult Hype and it will generate a shortcode you can insert anywhere. <a href="https://forums.tumult.com/t/hype-animations-wordpress-plugin/11074" target="_blank">Need help?</a>' , 'hype-animations' ).'<br><br>
 	<a href="#oModal1" class="button" id="add_hypeanimations_shortcode_newbutton" style="outline: medium none !important; cursor: pointer;" ><i class="dashicons-before dashicons-plus-alt"></i> '.__( 'Upload new animation' , 'hype-animations' ).'</a>
 	</div>';
 	if ($_GET['delete']>0) {
@@ -140,7 +141,7 @@ function hypeanimations_panel() {
 		$delete = $wpdb -> query("DELETE FROM ".$table_name." WHERE id='".ceil($_GET['delete'])."' LIMIT 1");
 		hyperrmdir($anims_dir.ceil($_GET['delete']).'/');
 		if ($animtitle!='') {
-			echo '<p>&nbsp;</p><p><span style="padding:10px;color:#FFF;background:#cc0000;">'.$animtitle.' has been deleted !</style></p>';
+			echo '<p>&nbsp;</p><p><span style="padding:10px;color:#FFF;background:#cc0000;">'.$animtitle.' has been deleted.</style></p>';
 		}
 	}
 	/*if (isset($_FILES['file'])) {
@@ -257,19 +258,15 @@ function hypeanimations_panel() {
 					if (file_exists($uploadfinaldir.$actdataid.'/')) {
 						hyperrmdir($uploadfinaldir.$actdataid.'/');
 					}
+
+					@mkdir($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$new_name.'.hyperesources/', 0755, true);
+					
 					$jsfiles = scandir($uploaddir.'Assets/'.$actfile[0].'.hyperesources/');
 					for ($j=0;isset($jsfiles[$j]);$j++) {
-						if (preg_match('~_hype_generated_script.js~',$jsfiles[$j])) {
-							$jshandle = fopen($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j], "r");
-							if ($jshandle) {
-								$newfile='';
-								while (($jsline = fgets($jshandle)) !== false) {
-									$jsline=str_replace($actfile[0].'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$actdataid,$jsline);
-									$newfile.=$jsline;
-								}
-								//reecrire
+						if($jsfiles[$j] != '.' && $jsfiles[$j] != '..'){
+							if(!is_dir($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j])){
+								copy($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j], $uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$new_name.'.hyperesources/'.$jsfiles[$j]);
 								unlink($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j]);
-								file_put_contents($uploaddir.'Assets/'.$actfile[0].'.hyperesources/'.$jsfiles[$j], $newfile);
 							}
 						}
 					}
@@ -281,7 +278,7 @@ function hypeanimations_panel() {
 					$handle = fopen($uploaddir.'Assets/'.$actfile[0].'.html', "r");
 					if ($handle) {
 						while (($line = fgets($handle)) !== false) {
-							$line=str_replace($new_name.'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$actdataid,$line);
+							$line=str_replace($new_name.'.hyperesources',$upload_dir['baseurl'].'/hypeanimations/'.$actdataid.'/'.$new_name.'.hyperesources',$line);
 							if (preg_match('~<div id="~',$line)) {
 								$recordlines=1;
 							}
@@ -299,6 +296,9 @@ function hypeanimations_panel() {
 						//echo 'error';
 					}
 					$update = $wpdb -> query("UPDATE ".$table_name." SET code='".addslashes(htmlentities($agarder1))."',updated='".time()."' WHERE id='".$actdataid."' LIMIT 1");
+					//copy index.html
+					copy($uploaddir.'Assets/'.$actfile[0].'.html', $upload_dir['basedir'].'/hypeanimations/'.$actdataid.'/'.$actfile[0].'.html');
+
 					if (file_exists($uploaddir.'Assets/'.$actfile[0].'.html')) {
 						unlink($uploaddir.'Assets/'.$actfile[0].'.html');
 					}
@@ -306,7 +306,7 @@ function hypeanimations_panel() {
 						hyperrmdir($uploaddir.'Assets/');
 					}
 					$hypeupdated=$actdataid;
-					$hypeupdatetd_title=$actfile[0];
+					$hypeupdatetd_title=$new_name;
 				}
 			}
 		} 
@@ -335,7 +335,7 @@ function hypeanimations_panel() {
 			echo '<tr><td>'.$results->nom.'</td><td><pre>[hypeanimations_anim id="'.$results->id.'"]</pre></td><td>'.__( 'Add a container around the animation' , 'hype-animations' ).' : <select class="hypeanimations_container" name="container">
 <option value="div" '.($results->container=='div' ? 'selected' : '').'>&lt;div&gt;</option>
 <option value="iframe" '.($results->container=='iframe' ? 'selected' : '').'>&lt;iframe&gt;</option>
-</select> <input type="button" value="'.__( 'Update' , 'hype-animations' ).'" class="updatecontainer" data-id="'.$results->id.'"><div '.($results->container=='none' ? 'style="display:none;"' : '').'>'.__( 'Container CSS class' , 'hype-animations' ).' : <input type="text" name="class" placeholder="Myclass1 Myclass2" value="'.$results->containerclass.'"></div></td><td>'.($results->updated==0 ? '<em>'.__( 'No data' , 'hype-animations' ).'</em>' : date('d/m/Y',$results->updated).'<br>'.date('H:i:s',$results->updated)).'</td><td><a href="admin.php?page=hypeanimations_panel&update='.$results->id.'" class="animupdate" data-id="'.$results->id.'">'.__( 'Update' , 'hype-animations' ).'</a> <a href="admin.php?page=hypeanimations_panel&delete='.$results->id.'" class="animdelete">'.__( 'Delete' , 'hype-animations' ).'</a></td></tr>';
+</select> <input type="button" value="'.__( 'Update' , 'hype-animations' ).'" class="updatecontainer" data-id="'.$results->id.'"><div '.($results->container=='none' ? 'style="display:none;"' : '').'>'.__( 'Container CSS class' , 'hype-animations' ).' : <input type="text" name="class" placeholder="Myclass1 Myclass2" value="'.$results->containerclass.'"></div></td><td>'.($results->updated==0 ? '<em>'.__( 'No data' , 'hype-animations' ).'</em>' : date('d/m/Y',$results->updated).'<br>'.date('H:i:s',$results->updated)).'</td><td><a href="admin.php?page=hypeanimations_panel&update='.$results->id.'" class="animupdate" data-id="'.$results->id.'">'.__( 'Update' , 'hype-animations' ).'</a> <a href="javascript:void(0)" id="'.$results->id.'" class="animcopy">'.__( 'Copy Code' , 'hype-animations' ).'</a> <a href="admin.php?page=hypeanimations_panel&delete='.$results->id.'" class="animdelete">'.__( 'Delete' , 'hype-animations' ).'</a></td></tr>';
 		}
 	echo '</tbody>
 	</table>
@@ -344,6 +344,29 @@ function hypeanimations_panel() {
 	
 	<script>
 	jQuery(document).ready(function(jQuery){
+		jQuery(document).on("click", ".animcopy", function(){
+			jQuery("body").append("<div class=\'popup-wrap\'> <div class=\'popup-overlay\'> <div class=\'popup\'><h3 class=\'popup-heading\'>Copy Embed Code</h3><textarea class=\'copydata\' rows=\'10\' cols=\'30\' style=\'width:100%\' readonly></textarea><span class=\'close-popup\'>x</span><span class=\'copied\'>Copied to clipboard.</span></div> </div>"); 
+
+			jQuery.ajax({
+				type: "POST",
+				url: ajaxurl,
+				data: {
+					"action": "hypeanimations_getcontent",
+					"dataid": jQuery(this).attr("id")
+				}					
+			}).done(function( content ) {
+				jQuery(".copydata").text(content);
+			});
+		});
+		jQuery(document).on("click", ".copydata", function(){
+		    jQuery(this).select();
+		    document.execCommand("copy");
+		    jQuery(".copied").show().delay(3000).fadeOut();
+		});
+		jQuery(document).on("click", ".close-popup", function(){
+			jQuery(this).parents(".popup-wrap").remove(); 
+		});
+
 		jQuery(".hypeanimations_container").change(function(){
 			if (jQuery(this).val()!="none") {
 				jQuery(this).parent().find("div").css("display","block");
@@ -398,11 +421,11 @@ function hypeanimations_panel() {
 				{ "width": "250px" }
 			],
 			language: {
-				processing:     "'.__( 'Processing ...' , 'hype-animations' ).'",
+				processing:     "'.__( 'Processing...' , 'hype-animations' ).'",
 				search:         "'.__( 'Search :' , 'hype-animations' ).'",
 				lengthMenu:    "'.__( 'Show' , 'hype-animations' ).' _MENU_ '.__( 'animations' , 'hype-animations' ).'",
 				info:           "'.__( 'Showing' , 'hype-animations' ).' _START_ '.__( 'to' , 'hype-animations' ).' _END_ '.__( 'of' , 'hype-animations' ).' _TOTAL_ '.__( 'animations' , 'hype-animations' ).'",
-				infoEmpty:      "'.__( 'Showing animation 0 to 0 of 0 entries' , 'hype-animations' ).'",
+				infoEmpty:      "'.__( 'No animations found.' , 'hype-animations' ).'",
 				loadingRecords: "'.__( 'Loading ...' , 'hype-animations' ).'",
 				zeroRecords:    "'.__( 'No animation has been found' , 'hype-animations' ).'",
 				emptyTable:     "'.__( 'No animation has been added' , 'hype-animations' ).'",
@@ -451,4 +474,19 @@ function hypeanimations_getanimid(){
     if (isset($response)) { echo json_encode($response); }
     exit();
 }
+add_action('wp_ajax_hypeanimations_getcontent', 'hypeanimations_getcontent');
+function hypeanimations_getcontent(){
+	global $wpdb;
+	global $table_name;
+    $response = array();
+    if(!empty($_POST['dataid'])){
+		$post_dataid=$_POST['dataid'];
+		$animcode = $wpdb->get_var("SELECT code FROM ".$table_name." WHERE id='".$post_dataid."' LIMIT 1");
+		$animcode = str_replace("https://", "//", html_entity_decode($animcode));
+		$animcode = str_replace("http://", "//", html_entity_decode($animcode));
+    }
+	echo html_entity_decode($animcode);
+    exit();
+}
+
 ?>
