@@ -3,7 +3,7 @@ Author URI: http://www.tumult.com
 Plugin URI: https://forums.tumult.com/t/hype-animations-wordpress-plugin/11074
 Contributors: freeben, tumultinc
 Tags: Hype,Animations
-Requires at least: 4.1
+Requires at least: 4.7
 Tested up to: 4.8.1
 Stable tag: trunk
 License: GPLv2 or later
@@ -12,10 +12,9 @@ Description: Easily embed your Hype animations into your Wordpress website.
 
 == Description ==
 
-* **English** : Ce plugin vous permet de télécharger un fichier OAM à partir d'un Hype Tumult et d'intégrer facilement votre animation dans une publication ou une page en utilisant un code court.
+* **English** : This plugins allows you to upload your Tumult Hype animations to your Wordpress site to easily embed them using shortcodes on posts and pages. You can also easily copy the embed code to use your Wordpress site as a Tumult Hype animation host. 
 
-* **Français** : Insérez facilement vos animations Hype sur votre site Wordpress.  
-
+* **Français** : Ce plugin vous permet de télécharger un fichier OAM à partir d'un Hype Tumult et d'intégrer facilement votre animation dans une publication ou une page en utilisant un code court. Insérez facilement vos animations Hype sur votre site Wordpress. Vous pouvez également copier facilement le code intégré pour utiliser votre site Wordpress en tant qu'homme d'animation Tumult Hype. 
 
 == Installation ==
 
@@ -33,9 +32,9 @@ Description: Easily embed your Hype animations into your Wordpress website.
 
 == Usage ==
 
-* **English** : Go to the Hype Animations section in the Admin dashboard and upload your animation exported in .OAM format. (File > Export as HTML5 > OAM) The plugin will process your file and generate a shortcode it only remains to insert anywhere.
+* **English** : Go to the Hype Animations section in the Admin dashboard and upload your animation exported in .OAM format. (File > Export as HTML5 > OAM) The plugin will process your file and generate a shortcode it only remains to insert anywhere. You can also use the Hype Animations button on the post edit page. 
 
-* **Français** : Allez dans la section Hype Animations ajoutée par le plugin et envoyez votre animation exportée au format .OAM, le plugin traitera votre fichier puis génèrera un shortcode qu'il ne restera plus qu'à insérer où vous le souhaitez.
+* **Français** : Allez dans la section Hype Animations ajoutée par le plugin et envoyez votre animation exportée au format .OAM, le plugin traitera votre fichier puis génèrera un shortcode qu'il ne restera plus qu'à insérer où vous le souhaitez. Vous pouvez également utiliser le bouton Hype Animations sur la post 'edit page'.
 
 
 == Changelog ==
